@@ -24,13 +24,15 @@ Assuming that you already have working CMS application and you use video snippet
 
 ```
 
-You want to convert your database and use like markdown tag instead. Makrdown tag is shorter yet easier to maintain. When 3rd party improve the snippet or add some new feature which you might need you would like update your records including video easily.
+You want to convert your CMS database and use like markdown tag instead. Makrdown tag is much shorter yet easier to maintain. If 3rd party would improve its snippet or rather invent new feature which you might need then you would like to upgrade your records including their videos easily.
 
 Markdown tag would look like this:
 
 ```
   brightcove-default(5397185555001)
 ```
+
+Above markdown video tag is implemented [here](lib/video_string.rb)
 
 ### Solution
 
@@ -40,9 +42,8 @@ You could run script against your database like this:
 require "lib/walker" # you might just copy Walker class here as well
 
 tracker = "<object class=\"BrightcoveExperience video-player\""
-
 counter = 0
-Lesson.unscoped.where("article LIKE ?", "%#{tracker}%").each do |lesson|
+Lesson.where("article LIKE ?", "%#{tracker}%").find_each do |lesson|
   article = lesson.article
   next unless article
   article = Walker.new(article).replace!
@@ -53,5 +54,5 @@ Lesson.unscoped.where("article LIKE ?", "%#{tracker}%").each do |lesson|
   end
 end
 
-puts "#{counter} videos converted"
+puts "#{counter} video embeds converted!"
 ```
